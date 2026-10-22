@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Config / secrets
+config/local.yaml
+config/*.secret.yaml
+offsets/community_offsets.json
+
+# Runtime artifacts
+logs/
+*.log
+screenshots/
+cache/
+models/*.onnx
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Build
+build/
+dist/

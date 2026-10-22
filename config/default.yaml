@@ -1,0 +1,44 @@
+# cs2-external-esp default configuration
+app:
+  name: cs2-external-esp
+  version: 0.9.3
+  log_level: info
+
+process:
+  executable: cs2.exe
+  poll_interval_ms: 16
+  module: client.dll
+
+overlay:
+  backend: win32_layered
+  fps_cap: 144
+  vsync: false
+  colors:
+    enemy: "#ff3b30"
+    teammate: "#34c759"
+    skeleton: "#ffffff"
+    box: "#ffd60a"
+
+features:
+  esp:
+    enabled: true
+    draw_boxes: true
+    draw_skeleton: true
+    draw_health: true
+    max_distance_m: 250
+  aimbot:
+    enabled: false            # off by default, educational demo only
+    smoothing: 4.0
+    fov_deg: 2.5
+    bone: head
+  radar:
+    enabled: true
+    scale: 0.35
+    rotate_with_player: true
+  triggerbot:
+    enabled: false
+    delay_ms: 45
+
+offsets:
+  schema: offsets/schema.yaml
+  auto_refresh: false

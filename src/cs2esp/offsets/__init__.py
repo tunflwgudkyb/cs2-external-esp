@@ -1,0 +1,1 @@
+"""Runtime offset resolution for cs2 client.dll."""

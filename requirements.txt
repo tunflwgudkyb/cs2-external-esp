@@ -1,0 +1,9 @@
+# cs2-external-esp runtime dependencies
+pywin32>=306
+pymem>=1.12.0
+requests>=2.31.0
+pyyaml>=6.0.1
+keyboard>=0.13.5
+colorama>=0.4.6
+numpy>=1.26.0
+psutil>=5.9.6

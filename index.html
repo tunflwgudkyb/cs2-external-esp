@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cs2-external-esp — CS2 External Cheat Research Overlay</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-deep: #070a18;
+    --bg-navy: #0b1030;
+    --bg-indigo: #141a3d;
+    --accent: #7c5cff;
+    --accent-2: #22d3ee;
+    --text: #e6e9f5;
+    --muted: #9aa3c0;
+    --card: rgba(255, 255, 255, 0.04);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --glass: rgba(12, 16, 40, 0.55);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(1100px 700px at 12% -8%, rgba(124, 92, 255, 0.22), transparent 60%),
+      radial-gradient(900px 600px at 92% 4%, rgba(34, 211, 238, 0.14), transparent 55%),
+      radial-gradient(1000px 800px at 50% 110%, rgba(88, 66, 190, 0.20), transparent 60%),
+      linear-gradient(160deg, #070a18 0%, #0b1030 42%, #101538 72%, #0a0d22 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap {
+    width: 100%;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    background: var(--glass);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 68px;
+    gap: 24px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 0 18px rgba(124, 92, 255, 0.55);
+  }
+
+  .brand span.accent {
+    background: linear-gradient(90deg, #b7a6ff, #6ee7f9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    font-size: 0.93rem;
+    color: var(--muted);
+  }
+
+  .nav-links a {
+    transition: color 0.2s ease;
+  }
+
+  .nav-links a:hover { color: #fff; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: transform 0.18s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #7c5cff 0%, #5b7cff 55%, #22d3ee 130%);
+    color: #fff;
+    padding: 12px 22px;
+    font-size: 0.94rem;
+    box-shadow: 0 8px 28px rgba(99, 88, 255, 0.4);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(99, 88, 255, 0.6);
+  }
+
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: var(--text);
+    padding: 12px 22px;
+    font-size: 0.94rem;
+  }
+
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .nav-cta.btn-primary {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 92px 0 76px;
+    text-align: center;
+    position: relative;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #cfc6ff;
+    background: rgba(124, 92, 255, 0.12);
+    border: 1px solid rgba(124, 92, 255, 0.35);
+    box-shadow: inset 0 0 20px rgba(124, 92, 255, 0.12);
+    margin-bottom: 28px;
+  }
+
+  .pill .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 10px #4ade80;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.3rem, 6vw, 4.15rem);
+    line-height: 1.08;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: 22px;
+  }
+
+  .grad-text {
+    background: linear-gradient(100deg, #ffffff 0%, #b7a6ff 38%, #6ee7f9 78%, #ffffff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .hero p.lead {
+    max-width: 660px;
+    margin: 0 auto 38px;
+    color: var(--muted);
+    font-size: 1.06rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 52px;
+  }
+
+  .hero-actions .btn-primary,
+  .hero-actions .btn-ghost {
+    padding: 15px 32px;
+    font-size: 1rem;
+    border-radius: 14px;
+  }
+
+  .stats {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 20px;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    font-size: 0.88rem;
+    color: var(--muted);
+    backdrop-filter: blur(6px);
+  }
+
+  .chip strong {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .chip .chip-ico { font-size: 1rem; }
+
+  /* ---------- SECTION SHELL ---------- */
+  section { padding: 72px 0; }
+
+  .section-head {
+    text-align: center;
+    margin-bottom: 52px;
+  }
+
+  .section-head .eyebrow {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 12px;
+  }
+
+  .section-head h2 {
+    font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+    font-weight: 850;
+    letter-spacing: -0.015em;
+    margin-bottom: 14px;
+  }
+
+  .section-head p {
+    color: var(--muted);
+    max-width: 580px;
+    margin: 0 auto;
+    font-size: 0.98rem;
+  }
+
+  /* ---------- FEATURES ---------- */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+
+  .feature-card {
+    position: relative;
+    padding: 30px 26px 28px;
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+
+  .feature-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    opacity: 0.9;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-7px);
+    border-color: rgba(124, 92, 255, 0.45);
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(124, 92, 255, 0.12);
+  }
+
+  .feature-ico {
+    font-size: 1.75rem;
+    display: inline-grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 13px;
+    background: rgba(124, 92, 255, 0.12);
+    border: 1px solid rgba(124, 92, 255, 0.22);
+    margin-bottom: 18px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.06rem;
+    font-weight: 750;
+    margin-bottom: 9px;
+  }
+
+  .feature-card p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+    padding-left: 8px;
+  }
+
+  .steps::before {
+    content: "";
+    position: absolute;
+    left: 31px;
+    top: 18px;
+    bottom: 18px;
+    width: 2px;
+    background: linear-gradient(180deg, rgba(124, 92, 255, 0.9), rgba(34, 211, 238, 0.75), rgba(124, 92, 255, 0.05));
+    border-radius: 2px;
+  }
+
+  .step {
+    position: relative;
+    display: flex;
+    gap: 26px;
+    padding: 20px 0 34px;
+  }
+
+  .step:last-child { padding-bottom: 0; }
+
+  .step-num {
+    flex: 0 0 auto;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #fff;
+    background: linear-gradient(135deg, #1a1f47, #2a2f66);
+    border: 1px solid rgba(124, 92, 255, 0.55);
+    box-shadow: 0 0 0 5px rgba(7, 10, 24, 1), 0 0 24px rgba(124, 92, 255, 0.35);
+    z-index: 1;
+  }
+
+  .step-body h3 {
+    font-size: 1.08rem;
+    font-weight: 750;
+    margin-bottom: 7px;
+    padding-top: 6px;
+  }
+
+  .step-body p {
+    color: var(--muted);
+    font-size: 0.92rem;
+    max-width: 520px;
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq-list {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  details.faq-item {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.25s ease, background 0.25s ease;
+  }
+
+  details.faq-item[open] {
+    border-color: rgba(124, 92, 255, 0.4);
+    background: rgba(124, 92, 255, 0.06);
+  }
+
+  details.faq-item summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 19px 22px;
+    font-weight: 650;
+    font-size: 0.98rem;
+    user-select: none;
+  }
+
+  details.faq-item summary::-webkit-details-marker { display: none; }
+
+  .faq-icon {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    position: relative;
+    border-radius: 50%;
+    background: rgba(124, 92, 255, 0.14);
+    border: 1px solid rgba(124, 92, 255, 0.3);
+    transition: transform 0.28s ease, background 0.25s ease;
+  }
+
+  .faq-icon::before,
+  .faq-icon::after {
+    content: "";
+    position: absolute;
+    background: #c9c1ff;
+    border-radius: 2px;
+    top: 50%;
+    left: 50%;
+    transition: transform 0.28s ease, opacity 0.28s ease;
+  }
+
+  .faq-icon::before {
+    width: 11px;
+    height: 2px;
+    transform: translate(-50%, -50%);
+  }
+
+  .faq-icon::after {
+    width: 2px;
+    height: 11px;
+    transform: translate(-50%, -50%);
+  }
+
+  details.faq-item[open] .faq-icon {
+    transform: rotate(45deg);
+    background: rgba(34, 211, 238, 0.18);
+    border-color: rgba(34, 211, 238, 0.4);
+  }
+
+  details.faq-item[open] .faq-icon::before,
+  details.faq-item[open] .faq-icon::after {
+    background: #7ce9f8;
+  }
+
+  .faq-answer {
+    padding: 0 22px 21px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    max-width: 660px;
+  }
+
+  /* ---------- CTA BANNER ---------- */
+  .cta-banner {
+    position: relative;
+    border-radius: 22px;
+    padding: 62px 32px;
+    text-align: center;
+    overflow: hidden;
+    background:
+      radial-gradient(600px 260px at 50% 0%, rgba(124, 92, 255, 0.35), transparent 70%),
+      linear-gradient(150deg, rgba(20, 26, 61, 0.95), rgba(10, 13, 34, 0.95));
+    border: 1px solid rgba(124, 92, 255, 0.3);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .cta-banner::after {
+    content: "";
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(34, 211, 238, 0.14), transparent 65%);
+    pointer-events: none;
+  }
+
+  .cta-banner h2 {
+    font-size: clamp(1.6rem, 3.6vw, 2.35rem);
+    font-weight: 850;
+    letter-spacing: -0.015em;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-banner p {
+    color: var(--muted);
+    max-width: 520px;
+    margin: 0 auto 30px;
+    font-size: 0.98rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-banner .btn-primary {
+    padding: 16px 38px;
+    font-size: 1rem;
+    border-radius: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-note {
+    margin-top: 16px;
+    font-size: 0.78rem;
+    color: #7b84a8;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 34px 0;
+    margin-top: 40px;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .footer-inner a {
+    color: #b7a6ff;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  .footer-inner a:hover { color: #6ee7f9; }
+
+  .foot-links {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 900px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-inner { height: 60px; }
+    .nav-cta.btn-primary { padding: 9px 15px; font-size: 0.82rem; }
+    .brand { font-size: 0.95rem; }
+
+    .hero { padding: 60px 0 52px; }
+    .hero p.lead { font-size: 0.96rem; }
+    .hero-actions .btn-primary,
+    .hero-actions .btn-ghost { width: 100%; }
+
+    .features-grid { grid-template-columns: 1fr; }
+    section { padding: 52px 0; }
+
+    .steps::before { left: 23px; }
+    .step { gap: 18px; }
+    .step-num { width: 40px; height: 40px; font-size: 0.92rem; }
+    .step-body h3 { padding-top: 2px; }
+
+    .cta-banner { padding: 46px 22px; }
+    .cta-banner .btn-primary { width: 100%; }
+
+    .footer-inner { flex-direction: column; text-align: center; }
+    .foot-links { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark">🎯</span>
+        <span>cs2-<span class="accent">external-esp</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <a class="btn btn-primary nav-cta" href="https://gitscore.cc" target="_blank" rel="noopener">Download</a>
+    </div>
+  </nav>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="wrap">
+        <div class="pill"><span class="dot"></span> CS2 External Cheats · Educational Research</div>
+        <h1>
+          External <span class="grad-text">ESP Overlay</span><br>
+          for CS2 Cheat-Dev Study
+        </h1>
+        <p class="lead">
+          cs2-external-esp is a self-contained external overlay built for cheat-development research.
+          Study player box rendering, skeleton projection, health bars, radar math, glow passes and
+          no-flash logic — without touching the game process memory.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://gitscore.cc" target="_blank" rel="noopener">⬇ Download for Windows</a>
+          <a class="btn btn-ghost" href="https://gitscore.cc" target="_blank" rel="noopener">★ View on GitHub</a>
+        </div>
+        <div class="stats">
+          <div class="chip"><span class="chip-ico">📥</span><strong>18.4k+</strong> downloads</div>
+          <div class="chip"><span class="chip-ico">🏷️</span>v<strong>2.4.1</strong></div>
+          <div class="chip"><span class="chip-ico">🪟</span><strong>Windows 10 / 11</strong></div>
+          <div class="chip"><span class="chip-ico">🧪</span><strong>Free &amp; open source</strong></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="eyebrow">Feature set</div>
+          <h2>Everything the overlay renders</h2>
+          <p>Six core modules implemented as an external overlay — each one designed to be read, modified and studied.</p>
+        </div>
+
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="feature-ico">📦</div>
+            <h3>Player Box ESP</h3>
+            <p>Draws 2D bounding boxes around visible enemies using projected world-to-screen coordinates, with configurable corner-style outlines.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-ico">🦴</div>
+            <h3>Skeleton Rendering</h3>
+            <p>Bone-to-bone line drawing across the head, spine, arms and legs, giving a clean articulated view of every player model.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-ico">❤️</div>
+            <h3>Health Bars</h3>
+            <p>Vertical and horizontal health indicators that scale with the projected box height, plus a numeric HP readout and armor tint.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-ico">🧭</div>
+            <h3>Radar Hack</h3>
+            <p>A rotating minimap that plots enemy positions relative to your local yaw, with distance labels and team coloring.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-ico">🎯</div>
+            <h3>Aimbot Logic</h3>
+            <p>Configurable FOV cone, smoothing curve and bone-target selection — implemented for study of angle calculation math.</p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-ico">✨</div>
+            <h3>Glow &amp; No-Flash</h3>
+            <p>Outline glow pass for player models and a no-flash routine that neutralizes flashbang screen effects for cleaner frame analysis.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="eyebrow">How it works</div>
